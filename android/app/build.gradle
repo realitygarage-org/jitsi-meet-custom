@@ -95,6 +95,7 @@ dependencies {
     }
 
     implementation project(':sdk')
+
 }
 
 gradle.projectsEvaluated {
