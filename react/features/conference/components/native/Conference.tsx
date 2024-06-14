@@ -264,7 +264,7 @@ class Conference extends AbstractConference<IProps, State> {
      * @returns {ReactElement}
      */
     render() {
-        const {
+     /*   const {
             _brandingStyles,
             _fullscreenEnabled
         } = this.props;
@@ -285,7 +285,7 @@ class Conference extends AbstractConference<IProps, State> {
                 }
                 { this._renderContent() }
             </Container>
-        );
+        );*/ return null;
     }
 
     /**
@@ -360,7 +360,7 @@ class Conference extends AbstractConference<IProps, State> {
      * @returns {React$Element}
      */
     _renderContent() {
-        const {
+     /*   const {
             _aspectRatio,
             _connecting,
             _filmstripVisible,
@@ -390,7 +390,7 @@ class Conference extends AbstractConference<IProps, State> {
             <>
                 {/*
                   * The LargeVideo is the lowermost stacking layer.
-                  */
+                  
                     _shouldDisplayTileView
                         ? <TileView onClick = { this._onClick } />
                         : <LargeVideo onClick = { this._onClick } />
@@ -398,14 +398,14 @@ class Conference extends AbstractConference<IProps, State> {
 
                 {/*
                   * If there is a ringing call, show the callee's info.
-                  */
+                  
                     <CalleeInfoContainer />
                 }
 
                 {/*
                   * The activity/loading indicator goes above everything, except
                   * the toolbox/toolbars and the dialogs.
-                  */
+                  
                     _connecting
                         && <TintedView>
                             <LoadingIndicator />
@@ -461,7 +461,7 @@ class Conference extends AbstractConference<IProps, State> {
                     <View
                         pointerEvents = 'box-none'
                         style = { alwaysOnTitleBarStyles as ViewStyle }>
-                        {/* eslint-disable-next-line react/jsx-no-bind */}
+                        {/* eslint-disable-next-line react/jsx-no-bind }
                         <AlwaysOnLabels createOnPress = { this._createOnPress } />
                     </View>
                 </SafeAreaView>
@@ -476,7 +476,7 @@ class Conference extends AbstractConference<IProps, State> {
                     </>
                 }
             </>
-        );
+        );*/ return null;
     }
 
     /**
@@ -604,3 +604,4 @@ export default withSafeAreaInsets(connect(_mapStateToProps)(props => {
         <Conference { ...props } />
     );
 }));
+

@@ -515,3 +515,4 @@ function _updateReceiverVideoConstraints({ getState }: IStore) {
         reportError(error, `Failed to set receiver video constraints ${JSON.stringify(receiverConstraints)}`);
     }
 }
+
