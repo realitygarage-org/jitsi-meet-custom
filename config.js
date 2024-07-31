@@ -30,13 +30,13 @@ var config = {
 
     hosts: {
         // XMPP domain.
-        domain: 'jitsi-meet.example.com',
+        domain: 'arjobcoach.com', //CHANGED - Davis
 
         // When using authentication, domain for guest users.
         // anonymousdomain: 'guest.example.com',
 
         // Domain for authenticated users. Defaults to <domain>.
-        // authdomain: 'jitsi-meet.example.com',
+        // authdomain: 'arjobcoach.com', //CHANGED - Davis
 
         // Focus component domain. Defaults to focus.<domain>.
         // focus: 'focus.jitsi-meet.example.com',
@@ -46,10 +46,10 @@ var config = {
     },
 
     // BOSH URL. FIXME: use XEP-0156 to discover it.
-    bosh: 'https://jitsi-meet.example.com/' + subdir + 'http-bind',
+    bosh: 'https://arjobcoach.com/' + subdir + 'http-bind', //CHANGED - Davis
 
     // Websocket URL (XMPP)
-    // websocket: 'wss://jitsi-meet.example.com/' + subdir + 'xmpp-websocket',
+    // websocket: 'wss://arjobcoach.com/' + subdir + 'xmpp-websocket', // CHANGED - Davis
 
     // Whether BOSH should be preferred over WebSocket if both are configured.
     // preferBosh: false,
@@ -230,7 +230,7 @@ var config = {
     // cameraFacingMode: 'user',
 
     // Sets the preferred resolution (height) for local video. Defaults to 720.
-    // resolution: 720,
+     resolution: 1080, // CHANGED - Davis
 
     // Specifies whether the raised hand will hide when someone becomes a dominant speaker or not
     // disableRemoveRaisedHandOnFocus: false,
@@ -274,18 +274,18 @@ var config = {
     // util#browser#usesNewGumFlow. The constraints are independent from
     // this config's resolution value. Defaults to requesting an ideal
     // resolution of 720p.
-    // constraints: {
-    //     video: {
-    //         height: {
-    //             ideal: 720,
-    //             max: 720,
-    //             min: 240,
-    //         },
-    //     },
-    // },
+     constraints: { // CHANGED - Davis
+         video: {
+             height: {
+                 ideal: 1080,
+                 max: 1080,
+                 min: 720,
+             },
+         },
+     },
 
     // Enable / disable simulcast support.
-    // disableSimulcast: false,
+     disableSimulcast: true, //CHANGED - Davis
 
     // Every participant after the Nth will start video muted.
     // startVideoMuted: 10,
@@ -456,10 +456,10 @@ var config = {
     // startLastN: 1,
 
     // Specify the settings for video quality optimizations on the client.
-    // videoQuality: {
+     videoQuality: {
     //
     //    // Provides a way to set the codec preference on desktop based endpoints.
-    //    codecPreferenceOrder: [ 'VP9', 'VP8', 'H264' ],
+        codecPreferenceOrder: [ 'VP9', 'VP8', 'H264' ], //CHANGED - Davis
     //
     //    // Codec specific settings for scalability modes and max bitrates.
     //    av1: {
@@ -551,7 +551,7 @@ var config = {
     //    },
     //
     //    // Provides a way to set the codec preference on mobile devices, both on RN and mobile browser based endpoint
-    //    mobileCodecPreferenceOrder: [ 'VP8', 'VP9', 'H264' ],
+        mobileCodecPreferenceOrder: [ 'VP8', 'VP9', 'H264' ], //CHANGED - Davis
     //
     //    // DEPRECATED! Use `codecPreferenceOrder/mobileCodecPreferenceOrder` instead.
     //    // Provides a way to prevent a video codec from being negotiated on the JVB connection. The codec specified
@@ -568,7 +568,7 @@ var config = {
     //    // to take effect.
     //    preferredCodec: 'VP8',
     //
-    // },
+     },
 
     // Notification timeouts
     // notificationTimeouts: {
@@ -1033,7 +1033,7 @@ var config = {
         // through the JVB and use the peer to peer connection instead. When a
         // 3rd participant joins the conference will be moved back to the JVB
         // connection.
-        enabled: true,
+        enabled: false,
 
         // Sets the ICE transport policy for the p2p connection. At the time
         // of this writing the list of possible values are 'all' and 'relay',

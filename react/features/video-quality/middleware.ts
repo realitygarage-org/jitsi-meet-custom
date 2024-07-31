@@ -19,7 +19,7 @@ MiddlewareRegistry.register(({ dispatch, getState }) => next => action => {
     switch (action.type) {
     case CONFERENCE_JOINED: {
         if (navigator.product === 'ReactNative') {
-            const { resolution } = getState()['features/base/config'];
+            const resolution = 1080; //const { resolution } = getState()['features/base/config']; //ADDED
 
             if (typeof resolution !== 'undefined') {
                 dispatch(setPreferredVideoQuality(Number.parseInt(`${resolution}`, 10)));
@@ -34,7 +34,14 @@ MiddlewareRegistry.register(({ dispatch, getState }) => next => action => {
         const { persistedPrefferedVideoQuality } = state['features/video-quality-persistent-storage'];
 
         if (videoQuality.persist && typeof persistedPrefferedVideoQuality !== 'undefined') {
-            dispatch(setPreferredVideoQuality(persistedPrefferedVideoQuality));
+            const resolution = 1080; //const { resolution } = getState()['features/base/config']; //ADDED
+            dispatch(setPreferredVideoQuality(resolution));
+        }
+        else { // ADDED
+            // Enforce specific resolution settings on configuration set
+            const resolution = 1080;
+            dispatch(setPreferredVideoQuality(resolution));
+            logger.info(`Configured preferred receiver video frame height to: ${resolution}`);
         }
 
         break;

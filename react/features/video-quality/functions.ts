@@ -9,15 +9,16 @@ import { CFG_LVL_TO_APP_QUALITY_LVL, VIDEO_QUALITY_LEVELS } from './constants';
  * @returns {number} The matching value from {@code VIDEO_QUALITY_LEVELS}.
  */
 export function getReceiverVideoQualityLevel(availableHeight: number, heightToLevel: Map<number, number>): number {
-    let selectedLevel = VIDEO_QUALITY_LEVELS.LOW;
+    //let selectedLevel = VIDEO_QUALITY_LEVELS.LOW;
+//
+ //   for (const [ levelThreshold, level ] of heightToLevel.entries()) {
+   //     if (availableHeight >= levelThreshold) {
+   //         selectedLevel = level;
+    //    }
+    //}
 
-    for (const [ levelThreshold, level ] of heightToLevel.entries()) {
-        if (availableHeight >= levelThreshold) {
-            selectedLevel = level;
-        }
-    }
+    return VIDEO_QUALITY_LEVELS.HIGH; // ADDED
 
-    return selectedLevel;
 }
 
 /**
@@ -36,30 +37,32 @@ export function validateMinHeightForQualityLvl(minHeightForQualityLvl?: { [key: 
         return undefined;
     }
 
-    const levelsSorted
-        = Object.keys(minHeightForQualityLvl)
-            .map(k => Number(k))
-            .sort((a, b) => a - b);
+    // ADDED - COMMENTED OUT
+    //const levelsSorted
+     //   = Object.keys(minHeightForQualityLvl)
+       //     .map(k => Number(k))
+         //   .sort((a, b) => a - b);
     const map = new Map();
 
     Object.values(VIDEO_QUALITY_LEVELS).sort()
         .forEach(value => {
             if (value > VIDEO_QUALITY_LEVELS.NONE) {
-                map.set(value, value);
+                map.set(0, value); // ADDED 0
             }
         });
 
-    for (const level of levelsSorted) {
-        const configQuality = minHeightForQualityLvl[level];
-        const appQuality = CFG_LVL_TO_APP_QUALITY_LVL[configQuality as keyof typeof CFG_LVL_TO_APP_QUALITY_LVL];
-
-        if (!appQuality) {
-            return undefined;
-        }
-
-        map.delete(appQuality);
-        map.set(level, appQuality);
-    }
+    // ADDED - COMMENTED OUT
+    //for (const level of levelsSorted) {
+     //   const configQuality = minHeightForQualityLvl[level];
+      //  const appQuality = CFG_LVL_TO_APP_QUALITY_LVL[configQuality as keyof typeof CFG_LVL_TO_APP_QUALITY_LVL];
+//
+  //      if (!appQuality) {
+    //        return undefined;
+      //  }
+//
+  //      map.delete(appQuality);
+    //    map.set(level, appQuality);
+    //}
 
     return map;
 }

@@ -13,7 +13,7 @@ export const DEFAULT_LAST_N = 20;
  */
 export const VIDEO_QUALITY_LEVELS = {
     ULTRA: 2160,
-    HIGH: 720,
+    HIGH: 1080,
     STANDARD: 720,
     LOW: 720,
     NONE: 0

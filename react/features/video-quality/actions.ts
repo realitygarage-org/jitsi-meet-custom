@@ -12,10 +12,19 @@ import { MAX_VIDEO_QUALITY, VIDEO_QUALITY_LEVELS } from './constants';
 import logger from './logger';
 
 /**
+ * Enforces minimum video quality level.
+ *
+ * @param {number} quality - The video quality to enforce.
+ * @returns {number} - The enforced video quality.
+ */
+function enforceMinimumQuality(quality: number): number {
+    return Math.max(quality, 720); // Ensure minimum 1080x720
+}
+
+/**
  * Sets the max frame height that should be received for the large video.
  *
- * @param {number} maxReceiverVideoQuality - The max video frame height to
- * receive.
+ * @param {number} maxReceiverVideoQuality - The max video frame height to receive.
  * @returns {{
  *     type: SET_MAX_RECEIVER_VIDEO_QUALITY_FOR_LARGE_VIDEO,
  *     maxReceiverVideoQuality: number
@@ -24,15 +33,14 @@ import logger from './logger';
 export function setMaxReceiverVideoQualityForLargeVideo(maxReceiverVideoQuality: number) {
     return {
         type: SET_MAX_RECEIVER_VIDEO_QUALITY_FOR_LARGE_VIDEO,
-        maxReceiverVideoQuality
+        maxReceiverVideoQuality: enforceMinimumQuality(maxReceiverVideoQuality)
     };
 }
 
 /**
- * Sets the max frame height that should be received for the screen sharing filmstrip particpant.
+ * Sets the max frame height that should be received for the screen sharing filmstrip participant.
  *
- * @param {number} maxReceiverVideoQuality - The max video frame height to
- * receive.
+ * @param {number} maxReceiverVideoQuality - The max video frame height to receive.
  * @returns {{
  *     type: SET_MAX_RECEIVER_VIDEO_QUALITY_FOR_SCREEN_SHARING_FILMSTRIP,
  *     maxReceiverVideoQuality: number
@@ -41,15 +49,14 @@ export function setMaxReceiverVideoQualityForLargeVideo(maxReceiverVideoQuality:
 export function setMaxReceiverVideoQualityForScreenSharingFilmstrip(maxReceiverVideoQuality: number) {
     return {
         type: SET_MAX_RECEIVER_VIDEO_QUALITY_FOR_SCREEN_SHARING_FILMSTRIP,
-        maxReceiverVideoQuality
+        maxReceiverVideoQuality: enforceMinimumQuality(maxReceiverVideoQuality)
     };
 }
 
 /**
  * Sets the max frame height that should be received from remote videos for the stage filmstrip.
  *
- * @param {number} maxReceiverVideoQuality - The max video frame height to
- * receive.
+ * @param {number} maxReceiverVideoQuality - The max video frame height to receive.
  * @returns {{
  *     type: SET_MAX_RECEIVER_VIDEO_QUALITY_FOR_STAGE_FILMSTRIP,
  *     maxReceiverVideoQuality: number
@@ -58,15 +65,14 @@ export function setMaxReceiverVideoQualityForScreenSharingFilmstrip(maxReceiverV
 export function setMaxReceiverVideoQualityForStageFilmstrip(maxReceiverVideoQuality: number) {
     return {
         type: SET_MAX_RECEIVER_VIDEO_QUALITY_FOR_STAGE_FILMSTRIP,
-        maxReceiverVideoQuality
+        maxReceiverVideoQuality: enforceMinimumQuality(maxReceiverVideoQuality)
     };
 }
 
 /**
  * Sets the max frame height that should be received from remote videos in tile view.
  *
- * @param {number} maxReceiverVideoQuality - The max video frame height to
- * receive.
+ * @param {number} maxReceiverVideoQuality - The max video frame height to receive.
  * @returns {{
  *     type: SET_MAX_RECEIVER_VIDEO_QUALITY_FOR_TILE_VIEW,
  *     maxReceiverVideoQuality: number
@@ -75,15 +81,14 @@ export function setMaxReceiverVideoQualityForStageFilmstrip(maxReceiverVideoQual
 export function setMaxReceiverVideoQualityForTileView(maxReceiverVideoQuality: number) {
     return {
         type: SET_MAX_RECEIVER_VIDEO_QUALITY_FOR_TILE_VIEW,
-        maxReceiverVideoQuality
+        maxReceiverVideoQuality: enforceMinimumQuality(maxReceiverVideoQuality)
     };
 }
 
 /**
  * Sets the max frame height that should be received from remote videos for the vertical filmstrip.
  *
- * @param {number} maxReceiverVideoQuality - The max video frame height to
- * receive.
+ * @param {number} maxReceiverVideoQuality - The max video frame height to receive.
  * @returns {{
  *     type: SET_MAX_RECEIVER_VIDEO_QUALITY_FOR_VERTICAL_FILMSTRIP,
  *     maxReceiverVideoQuality: number
@@ -92,16 +97,14 @@ export function setMaxReceiverVideoQualityForTileView(maxReceiverVideoQuality: n
 export function setMaxReceiverVideoQualityForVerticalFilmstrip(maxReceiverVideoQuality: number) {
     return {
         type: SET_MAX_RECEIVER_VIDEO_QUALITY_FOR_VERTICAL_FILMSTRIP,
-        maxReceiverVideoQuality
+        maxReceiverVideoQuality: enforceMinimumQuality(maxReceiverVideoQuality)
     };
 }
 
 /**
- * Sets the max frame height the user prefers to send and receive from the
- * remote participants.
+ * Sets the max frame height the user prefers to send and receive from the remote participants.
  *
- * @param {number} preferredVideoQuality - The max video resolution to send and
- * receive.
+ * @param {number} preferredVideoQuality - The max video resolution to send and receive.
  * @returns {{
  *     type: SET_PREFERRED_VIDEO_QUALITY,
  *     preferredVideoQuality: number
@@ -110,23 +113,20 @@ export function setMaxReceiverVideoQualityForVerticalFilmstrip(maxReceiverVideoQ
 export function setPreferredVideoQuality(preferredVideoQuality: number) {
     return {
         type: SET_PREFERRED_VIDEO_QUALITY,
-        preferredVideoQuality
+        preferredVideoQuality: enforceMinimumQuality(preferredVideoQuality)
     };
 }
 
 /**
- * Sets the maximum video size the local participant should send and receive from
- * remote participants.
+ * Sets the maximum video size the local participant should send and receive from remote participants.
  *
- * @param {number} frameHeight - The user preferred max frame height for send and
- * receive video.
+ * @param {number} frameHeight - The user preferred max frame height for send and receive video.
  * @returns {void}
  */
 export function setVideoQuality(frameHeight: number) {
     return (dispatch: IStore['dispatch']) => {
-        if (frameHeight < VIDEO_QUALITY_LEVELS.LOW) {
+        if (frameHeight < 720) { // Ensure minimum 1080x720
             logger.error(`Invalid frame height for video quality - ${frameHeight}`);
-
             return;
         }
 

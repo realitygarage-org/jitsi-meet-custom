@@ -349,3 +349,12 @@ export function devicePermissionsChanged(permissions: Object) {
         permissions
     };
 }
+
+// Added - DAVIS MANN
+import { TOGGLE_CAMERA } from './actionTypes';
+
+export function toggleCamera() {
+    return {
+        type: TOGGLE_CAMERA
+    };
+}

@@ -20,7 +20,7 @@ const DEFAULT_STATE = {
     maxReceiverVideoQualityForLargeVideo: VIDEO_QUALITY_LEVELS.ULTRA,
     maxReceiverVideoQualityForScreenSharingFilmstrip: VIDEO_QUALITY_LEVELS.HIGH,
     maxReceiverVideoQualityForStageFilmstrip: VIDEO_QUALITY_LEVELS.HIGH,
-    maxReceiverVideoQualityForTileView: VIDEO_QUALITY_LEVELS.STANDARD,
+    maxReceiverVideoQualityForTileView: VIDEO_QUALITY_LEVELS.HIGH,
     maxReceiverVideoQualityForVerticalFilmstrip: VIDEO_QUALITY_LEVELS.LOW,
     minHeightForQualityLvl: new Map(),
     preferredVideoQuality: VIDEO_QUALITY_LEVELS.ULTRA
@@ -69,46 +69,47 @@ ReducerRegistry.register<IVideoQualityPersistedState>('features/video-quality-pe
     return state;
 });
 
+// ADDED - FORCING QUALITY
 ReducerRegistry.register<IVideoQualityState>('features/video-quality',
-(state = DEFAULT_STATE, action): IVideoQualityState => {
-    switch (action.type) {
-    case SET_CONFIG:
-        return _setConfig(state, action);
-    case SET_MAX_RECEIVER_VIDEO_QUALITY_FOR_LARGE_VIDEO:
-        return set(state,
-            'maxReceiverVideoQualityForLargeVideo',
-            action.maxReceiverVideoQuality);
-    case SET_MAX_RECEIVER_VIDEO_QUALITY_FOR_SCREEN_SHARING_FILMSTRIP:
-        return set(state,
-            'maxReceiverVideoQualityForScreenSharingFilmstrip',
-            action.maxReceiverVideoQuality);
-    case SET_MAX_RECEIVER_VIDEO_QUALITY_FOR_STAGE_FILMSTRIP:
-        return set(
-            state,
-            'maxReceiverVideoQualityForStageFilmstrip',
-            action.maxReceiverVideoQuality);
-    case SET_MAX_RECEIVER_VIDEO_QUALITY_FOR_TILE_VIEW:
-        return set(
-            state,
-            'maxReceiverVideoQualityForTileView',
-            action.maxReceiverVideoQuality);
-    case SET_MAX_RECEIVER_VIDEO_QUALITY_FOR_VERTICAL_FILMSTRIP:
-        return set(
-            state,
-            'maxReceiverVideoQualityForVerticalFilmstrip',
-            action.maxReceiverVideoQuality);
-    case SET_PREFERRED_VIDEO_QUALITY: {
-        const { preferredVideoQuality } = action;
-
-        return {
-            ...state,
-            preferredVideoQuality
-        };
-    }
-    }
-
-    return state;
-});
+    (state = DEFAULT_STATE, action): IVideoQualityState => {
+        switch (action.type) {
+        case SET_CONFIG:
+            return _setConfig(state, action);
+        case SET_MAX_RECEIVER_VIDEO_QUALITY_FOR_LARGE_VIDEO:
+            return set(state,
+                'maxReceiverVideoQualityForLargeVideo',
+                VIDEO_QUALITY_LEVELS.ULTRA); // Force high quality
+        case SET_MAX_RECEIVER_VIDEO_QUALITY_FOR_SCREEN_SHARING_FILMSTRIP:
+            return set(state,
+                'maxReceiverVideoQualityForScreenSharingFilmstrip',
+                VIDEO_QUALITY_LEVELS.ULTRA); // Force high quality
+        case SET_MAX_RECEIVER_VIDEO_QUALITY_FOR_STAGE_FILMSTRIP:
+            return set(
+                state,
+                'maxReceiverVideoQualityForStageFilmstrip',
+                VIDEO_QUALITY_LEVELS.ULTRA); // Force high quality
+        case SET_MAX_RECEIVER_VIDEO_QUALITY_FOR_TILE_VIEW:
+            return set(
+                state,
+                'maxReceiverVideoQualityForTileView',
+                VIDEO_QUALITY_LEVELS.ULTRA); // Force high quality
+        case SET_MAX_RECEIVER_VIDEO_QUALITY_FOR_VERTICAL_FILMSTRIP:
+            return set(
+                state,
+                'maxReceiverVideoQualityForVerticalFilmstrip',
+                VIDEO_QUALITY_LEVELS.ULTRA); // Force high quality
+        case SET_PREFERRED_VIDEO_QUALITY: {
+            const { preferredVideoQuality } = action;
+    
+            return {
+                ...state,
+                preferredVideoQuality: VIDEO_QUALITY_LEVELS.ULTRA // Force high quality
+            };
+        }
+        }
+    
+        return state;
+    });    
 
 /**
  * Extracts the height to quality level mapping from the new config.

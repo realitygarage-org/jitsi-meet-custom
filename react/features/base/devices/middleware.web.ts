@@ -20,6 +20,7 @@ import {
     NOTIFY_MIC_ERROR,
     SET_AUDIO_INPUT_DEVICE,
     SET_VIDEO_INPUT_DEVICE,
+    TOGGLE_CAMERA, // Add this line DAVIS MANN
     UPDATE_DEVICE_LIST
 } from './actionTypes';
 import {
@@ -176,6 +177,22 @@ MiddlewareRegistry.register(store => next => action => {
         }
         break;
     }
+    
+    // Add this case - DAVIS MANN
+    case TOGGLE_CAMERA: {
+        const state = store.getState();
+        const localTrack = getLocalTrack(state['features/base/tracks'], MEDIA_TYPE.VIDEO);
+
+        if (localTrack) {
+            if (localTrack.isMuted()) {
+                localTrack.unmute();
+            } else {
+                localTrack.mute();
+            }
+        }
+        break;
+    }
+
     case UPDATE_DEVICE_LIST:
         logDevices(action.devices, 'Device list updated');
         if (areDeviceLabelsInitialized(store.getState())) {
@@ -240,7 +257,7 @@ function _processPendingRequests({ dispatch, getState }: IStore, next: Function,
 function _checkAndNotifyForNewDevice(store: IStore, newDevices: MediaDeviceInfo[], oldDevices: MediaDeviceInfo[]) {
     const { dispatch } = store;
 
-    // let's intersect both newDevices and oldDevices and handle thew newly
+    // let's intersect both newDevices and oldDevices and handle the newly
     // added devices
     const onlyNewDevices = newDevices.filter(
         nDevice => !oldDevices.find(

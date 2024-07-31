@@ -203,10 +203,10 @@ StateListenerRegistry.register(
 
 
         if (displayTileView) {
-            let newMaxRecvVideoQuality = VIDEO_QUALITY_LEVELS.STANDARD;
+            let newMaxRecvVideoQuality = VIDEO_QUALITY_LEVELS.HIGH;
 
             if (reducedUI) {
-                newMaxRecvVideoQuality = VIDEO_QUALITY_LEVELS.LOW;
+                newMaxRecvVideoQuality = VIDEO_QUALITY_LEVELS.HIGH;
             } else if (typeof tileViewThumbnailHeight === 'number' && !Number.isNaN(tileViewThumbnailHeight)) {
                 newMaxRecvVideoQuality
                     = getReceiverVideoQualityLevel(tileViewThumbnailHeight, getMinHeightForQualityLvlMap(state));
@@ -215,7 +215,7 @@ StateListenerRegistry.register(
                 if (maxFullResolutionParticipants !== -1) {
                     const override
                         = participantCount > maxFullResolutionParticipants
-                            && newMaxRecvVideoQuality > VIDEO_QUALITY_LEVELS.STANDARD;
+                            && newMaxRecvVideoQuality > VIDEO_QUALITY_LEVELS.HIGH;
 
                     logger.info(`Video quality level for thumbnail height: ${tileViewThumbnailHeight}, `
                         + `is: ${newMaxRecvVideoQuality}, `
@@ -223,7 +223,7 @@ StateListenerRegistry.register(
                         + `max full res N: ${maxFullResolutionParticipants}`);
 
                     if (override) {
-                        newMaxRecvVideoQuality = VIDEO_QUALITY_LEVELS.STANDARD;
+                        newMaxRecvVideoQuality = VIDEO_QUALITY_LEVELS.HIGH;
                     }
                 }
             }
@@ -256,23 +256,23 @@ StateListenerRegistry.register(
                 // Override HD level calculated for the thumbnail height when # of participants threshold is exceeded
                 if (maxFullResolutionParticipants !== -1) {
                     if (activeParticipantsCount > 0
-                        && newMaxRecvVideoQualityForStageFilmstrip > VIDEO_QUALITY_LEVELS.STANDARD) {
+                        && newMaxRecvVideoQualityForStageFilmstrip > VIDEO_QUALITY_LEVELS.HIGH) {
                         const isScreenSharingFilmstripParticipantFullResolution
-                            = newMaxRecvVideoQualityForScreenSharingFilmstrip > VIDEO_QUALITY_LEVELS.STANDARD;
+                            = newMaxRecvVideoQualityForScreenSharingFilmstrip > VIDEO_QUALITY_LEVELS.HIGH;
 
                         if (activeParticipantsCount > maxFullResolutionParticipants
                             - (isScreenSharingFilmstripParticipantFullResolution ? 1 : 0)) {
-                            newMaxRecvVideoQualityForStageFilmstrip = VIDEO_QUALITY_LEVELS.STANDARD;
+                            newMaxRecvVideoQualityForStageFilmstrip = VIDEO_QUALITY_LEVELS.HIGH;
                             newMaxRecvVideoQualityForVerticalFilmstrip
-                                = Math.min(VIDEO_QUALITY_LEVELS.STANDARD, newMaxRecvVideoQualityForVerticalFilmstrip);
-                        } else if (newMaxRecvVideoQualityForVerticalFilmstrip > VIDEO_QUALITY_LEVELS.STANDARD
+                                = Math.min(VIDEO_QUALITY_LEVELS.HIGH, newMaxRecvVideoQualityForVerticalFilmstrip);
+                        } else if (newMaxRecvVideoQualityForVerticalFilmstrip > VIDEO_QUALITY_LEVELS.HIGH
                                 && participantCount > maxFullResolutionParticipants - activeParticipantsCount) {
-                            newMaxRecvVideoQualityForVerticalFilmstrip = VIDEO_QUALITY_LEVELS.STANDARD;
+                            newMaxRecvVideoQualityForVerticalFilmstrip = VIDEO_QUALITY_LEVELS.HIGH;
                         }
-                    } else if (newMaxRecvVideoQualityForVerticalFilmstrip > VIDEO_QUALITY_LEVELS.STANDARD
+                    } else if (newMaxRecvVideoQualityForVerticalFilmstrip > VIDEO_QUALITY_LEVELS.HIGH
                             && participantCount > maxFullResolutionParticipants
-                                - (newMaxRecvVideoQualityForLargeVideo > VIDEO_QUALITY_LEVELS.STANDARD ? 1 : 0)) {
-                        newMaxRecvVideoQualityForVerticalFilmstrip = VIDEO_QUALITY_LEVELS.STANDARD;
+                                - (newMaxRecvVideoQualityForLargeVideo > VIDEO_QUALITY_LEVELS.HIGH ? 1 : 0)) {
+                        newMaxRecvVideoQualityForVerticalFilmstrip = VIDEO_QUALITY_LEVELS.HIGH;
                     }
                 }
             }
@@ -358,11 +358,14 @@ function _setSenderVideoConstraint(preferred: number, { getState }: IStore) {
         return;
     }
 
-    logger.info(`Setting sender resolution to ${preferred}`);
-    conference.setSenderVideoConstraint(preferred)
+    // ADDED - maxQuality
+    const maxQuality = VIDEO_QUALITY_LEVELS.HIGH;
+
+    logger.info(`Setting sender resolution to ${maxQuality}`);
+    conference.setSenderVideoConstraint(maxQuality)
         .catch((error: any) => {
             _handleParticipantError(error);
-            reportError(error, `Changing sender resolution to ${preferred} failed.`);
+            reportError(error, `Changing sender resolution to ${maxQuality} failed.`);
         });
 }
 
@@ -389,14 +392,16 @@ function _updateReceiverVideoConstraints({ getState }: IStore) {
         preferredVideoQuality
     } = state['features/video-quality'];
     const { participantId: largeVideoParticipantId = '' } = state['features/large-video'];
-    const maxFrameHeightForTileView = Math.min(maxReceiverVideoQualityForTileView, preferredVideoQuality);
-    const maxFrameHeightForStageFilmstrip = Math.min(maxReceiverVideoQualityForStageFilmstrip, preferredVideoQuality);
-    const maxFrameHeightForVerticalFilmstrip
-        = Math.min(maxReceiverVideoQualityForVerticalFilmstrip, preferredVideoQuality);
-    const maxFrameHeightForLargeVideo
-        = Math.min(maxReceiverVideoQualityForLargeVideo, preferredVideoQuality);
-    const maxFrameHeightForScreenSharingFilmstrip
-        = Math.min(maxReceiverVideoQualityForScreenSharingFilmstrip, preferredVideoQuality);
+
+    // Force high quality for all configurations
+    const forcedQualityLevel = VIDEO_QUALITY_LEVELS.HIGH;
+
+    const maxFrameHeightForTileView = forcedQualityLevel;
+    const maxFrameHeightForStageFilmstrip = forcedQualityLevel;
+    const maxFrameHeightForVerticalFilmstrip = forcedQualityLevel;
+    const maxFrameHeightForLargeVideo = forcedQualityLevel;
+    const maxFrameHeightForScreenSharingFilmstrip = forcedQualityLevel;
+
     const { remoteScreenShares } = state['features/video-layout'];
     const { visibleRemoteParticipants } = state['features/filmstrip'];
     const tracks = state['features/base/tracks'];
@@ -406,8 +411,8 @@ function _updateReceiverVideoConstraints({ getState }: IStore) {
 
     const receiverConstraints: any = {
         constraints: {},
-        defaultConstraints: { 'maxHeight': VIDEO_QUALITY_LEVELS.NONE },
-        lastN
+        defaultConstraints: { 'maxHeight': forcedQualityLevel },
+        lastN: -1
     };
 
     let activeParticipantsSources: string[] = [];
@@ -442,7 +447,7 @@ function _updateReceiverVideoConstraints({ getState }: IStore) {
         }
 
         visibleRemoteTrackSourceNames.forEach(sourceName => {
-            receiverConstraints.constraints[sourceName] = { 'maxHeight': maxFrameHeightForTileView };
+            receiverConstraints.constraints[sourceName] = { 'maxHeight': forcedQualityLevel };
         });
 
         // Prioritize screenshare in tile view.
@@ -458,7 +463,7 @@ function _updateReceiverVideoConstraints({ getState }: IStore) {
 
         if (visibleRemoteTrackSourceNames?.length) {
             visibleRemoteTrackSourceNames.forEach(sourceName => {
-                receiverConstraints.constraints[sourceName] = { 'maxHeight': maxFrameHeightForVerticalFilmstrip };
+                receiverConstraints.constraints[sourceName] = { 'maxHeight': forcedQualityLevel };
             });
         }
 
@@ -466,9 +471,6 @@ function _updateReceiverVideoConstraints({ getState }: IStore) {
             const selectedSources: string[] = [];
             const onStageSources: string[] = [];
 
-            // If more than one video source is pinned to the stage filmstrip, they need to be added to the
-            // 'selectedSources' so that the bridge can allocate bandwidth for all the sources as opposed to doing
-            // greedy allocation for the sources (which happens when they are added to 'onStageSources').
             if (activeParticipantsSources.length > 1) {
                 selectedSources.push(...activeParticipantsSources);
             } else {
@@ -477,34 +479,19 @@ function _updateReceiverVideoConstraints({ getState }: IStore) {
 
             activeParticipantsSources.forEach(sourceName => {
                 const isScreenSharing = remoteScreenShares.includes(sourceName);
-                const quality
-                    = isScreenSharing && preferredVideoQuality >= MAX_VIDEO_QUALITY
-                        ? VIDEO_QUALITY_UNLIMITED : maxFrameHeightForStageFilmstrip;
-
-                receiverConstraints.constraints[sourceName] = { 'maxHeight': quality };
+                receiverConstraints.constraints[sourceName] = { 'maxHeight': forcedQualityLevel };
             });
 
             if (screenshareFilmstripParticipantId) {
                 onStageSources.push(screenshareFilmstripParticipantId);
-                receiverConstraints.constraints[screenshareFilmstripParticipantId]
-                    = {
-                        'maxHeight':
-                            preferredVideoQuality >= MAX_VIDEO_QUALITY
-                                ? VIDEO_QUALITY_UNLIMITED : maxFrameHeightForScreenSharingFilmstrip
-                    };
+                receiverConstraints.constraints[screenshareFilmstripParticipantId] = { 'maxHeight': forcedQualityLevel };
             }
 
             receiverConstraints.onStageSources = onStageSources;
             receiverConstraints.selectedSources = selectedSources;
         } else if (largeVideoSourceName) {
-            let quality = VIDEO_QUALITY_UNLIMITED;
-
-            if (preferredVideoQuality < MAX_VIDEO_QUALITY
-                || !remoteScreenShares.find(id => id === largeVideoParticipantId)) {
-                quality = maxFrameHeightForLargeVideo;
-            }
-            receiverConstraints.constraints[largeVideoSourceName] = { 'maxHeight': quality };
-            receiverConstraints.onStageSources = [ largeVideoSourceName ];
+            receiverConstraints.constraints[largeVideoSourceName] = { 'maxHeight': forcedQualityLevel };
+            receiverConstraints.onStageSources = [largeVideoSourceName];
         }
     }
 
@@ -515,4 +502,5 @@ function _updateReceiverVideoConstraints({ getState }: IStore) {
         reportError(error, `Failed to set receiver video constraints ${JSON.stringify(receiverConstraints)}`);
     }
 }
+
 
